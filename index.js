@@ -2,17 +2,15 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const fs = require('fs')
 
 const conn = require('./db/conn')
-
-const upload = require('./config/uploadConfig')
 require('./model/rel')
 
 const PORT = process.env.PORT || 3000
-const HOST = process.env.HOST || '0.0.0.0' // 0.0.0.0 é seguro e aceita conexões em PaaS
-
 const isProduction = process.env.NODE_ENV === 'production'
 
+// Controllers
 const clienteController = require('./controller/cliente.controller')
 const jogoController = require('./controller/jogo.controller')
 const compraController = require('./controller/compra.controller')
@@ -23,19 +21,23 @@ const middleware = require('./middleware/auth.middleware')
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cors())
+
+// uploads folder
+if (!fs.existsSync('uploads')) fs.mkdirSync('uploads')
 app.use('/uploads', express.static('uploads'))
 
+/* ROTAS ABERTAS */
+app.get('/', (req,res)=>{
+    res.status(200).json({message:'API rodando'})
+})
 
-app.post('/cliente', upload.single('imagem'), clienteController.cadastrar)
+app.post('/cliente', require('./config/uploadConfig').single('imagem'), clienteController.cadastrar)
 app.post('/login', authController.Login)
 app.get("/jogo", jogoController.listar)
 app.get("/jogo/:id", jogoController.findByID)
 app.get("/review", reviewController.listar)
 
-app.get('/', (req,res)=>{
-    res.status(200).json({message:'esta rodando'})
-})
-
+/* ROTAS COM TOKEN */
 app.use(middleware.middleware)
 
 app.post('/review', reviewController.cadastrar)
@@ -43,29 +45,29 @@ app.post('/compra', compraController.cadastrar)
 app.post('/compra/carrinho', compraController.cadastrarCarrinho)
 app.get('/compra', compraController.listar)
 
+/* ROTAS APENAS PARA DEV */
 app.use(middleware.ranking)
-
 app.post("/jogo", jogoController.cadastrar)
 
-
+/* START SERVER */
 async function startServer() {
   try {
+    console.log("NODE_ENV:", process.env.NODE_ENV)
+
     if (!isProduction) {
-      // Em desenvolvimento: sincroniza alterando o esquema para facilitar dev
-      await conn.sync({ alter: true })
-      console.log('Banco sincronizado (dev) com { alter: true }');
+      await conn.sync()
+      console.log('DB sincronizado (dev)')
     } else {
-      // Em produção: NÃO sincronize automaticamente (evita droppar/alterar sem controle)
       await conn.authenticate()
-      console.log('Banco autenticado (produção)')
+      console.log('DB autenticado (produção)')
     }
 
-    app.listen(PORT, HOST, () => {
-      console.log(`Servidor rodando em http://${HOST}:${PORT}`)
-    });
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`)
+    })
   } catch (err) {
-    console.error('Erro ao conectar ao banco ou iniciar o servidor:', err)
-    process.exit(1) // sai com erro para o Railway identificar falha no deploy
+    console.error('Erro ao iniciar servidor:', err)
+    process.exit(1)
   }
 }
 
