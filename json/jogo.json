@@ -1,0 +1,17 @@
+[
+    {
+        "nomeJogo": "silkSong",
+        "preco": 10.00,
+        "descricao": "blablabla"
+    },
+    {
+        "nomeJogo": "silkSong",
+        "preco": 20.00,
+        "descricao": "blablabla"
+    },
+    {
+        "nomeJogo": "silkSong",
+        "preco": 30.00,
+        "descricao": "blablabla"
+    }
+]
