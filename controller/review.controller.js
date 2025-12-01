@@ -1,5 +1,5 @@
-const Review = require('../model/Review')
-const Cliente = require('../model/Cliente')
+const Review = require('../../backEnd/model/Review')
+const Cliente = require('../../backEnd/model/Cliente')
 
 const cadastrar = async (req,res)=>{
     const valores = req.body

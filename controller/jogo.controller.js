@@ -1,6 +1,23 @@
-const Jogo = require('../model/Jogo')
+const Jogo = require('../../backEnd/model/Jogo')
 
 const cadastrar = async (req,res)=>{
+    const valores = req.body
+    console.log(valores)
+    try{
+        if (req.file) {
+            const filePath = req.file.path.replace(/\\/g, "/");
+            valores.capa = "/" + filePath;
+        }
+        await Jogo.create(valores)
+        res.status(200).json({message:`Os Jogos Foi cadastrado`})
+    }
+    catch(err){
+        res.status(500).json({message:err})
+    }
+}
+
+
+const cadastrarLote = async (req,res)=>{
     const valores = req.body
     try{
         await Jogo.bulkCreate(valores)
@@ -32,4 +49,4 @@ const findByID = async (req,res)=>{
     }
 }
 
-module.exports = {cadastrar, listar, findByID}
+module.exports = {cadastrar, cadastrarLote, listar, findByID}

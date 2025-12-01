@@ -11,26 +11,9 @@ const Jogo = db.define('jogos',{
     },
     idGenero:{
         type: DataTypes.INTEGER,
-        allowNull: true,
         references:{
             model:'generos',
             key:'codGenero'
-        }
-    },
-    idPlataforma:{
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references:{
-            model:'plataformas',
-            key:'codPlataforma'
-        }
-    },
-    idDesenvolvedor:{
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references:{
-            model:'desenvolvedores',
-            key:'codDev'
         }
     },
     DataLancamento:{
@@ -51,7 +34,7 @@ const Jogo = db.define('jogos',{
     },
     capa:{
         type: DataTypes.STRING(127),
-        allowNull: true
+        allowNull: false
     },
     requisitosMinimos:{
         type: DataTypes.STRING(127),

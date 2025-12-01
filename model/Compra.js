@@ -1,39 +1,32 @@
-const { DataTypes } = require('sequelize')
-const db = require('../db/conn')
+const { DataTypes } = require('sequelize');
+const db = require('../db/conn');
 
-
-const Compra = db.define('compras',{
-    codCompra:{
+const Compra = db.define('compras', {
+    codCompra: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    idCliente:{
+    idCliente: {
         type: DataTypes.INTEGER,
-        references:{
-            model:'clientes',
-            key:'codCliente'
+        allowNull: false,
+        references: {
+            model: 'clientes',
+            key: 'codCliente'
         }
     },
-    idJogo:{
-        type: DataTypes.INTEGER,
-        references:{
-            model:'jogos',
-            key:'codJogo'
-        }
-    },
-
-    DataCompra:{
+    DataCompra: {
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
-    valorTotal:{
+    valorTotal: {
         type: DataTypes.FLOAT,
         allowNull: true
     }
-},{
+}, {
     modelName: 'compras',
     timestamps: true
-})
+});
 
-module.exports = Compra
+module.exports = Compra;

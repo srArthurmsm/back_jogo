@@ -10,7 +10,6 @@ require('./model/rel')
 const PORT = process.env.PORT || 3000
 const isProduction = process.env.NODE_ENV === 'production'
 
-// Controllers
 const clienteController = require('./controller/cliente.controller')
 const jogoController = require('./controller/jogo.controller')
 const compraController = require('./controller/compra.controller')
@@ -22,32 +21,29 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cors())
 
-// uploads folder
 if (!fs.existsSync('uploads')) fs.mkdirSync('uploads')
 app.use('/uploads', express.static('uploads'))
 
-/* ROTAS ABERTAS */
-app.get('/', (req,res)=>{
-    res.status(200).json({message:'API rodando'})
-})
+app.post('/cliente', upload.single('imagem'), clienteController.cadastrar)
+app.post("/jogo", upload.single('capa'), middleware.middleware,middleware.ranking,jogoController.cadastrar)
+app.post("/jogo/lote" ,upload.array('capas', 10), middleware.middleware ,middleware.ranking,jogoController.cadastrarLote)
 
-app.post('/cliente', require('./config/uploadConfig').single('imagem'), clienteController.cadastrar)
 app.post('/login', authController.Login)
 app.get("/jogo", jogoController.listar)
 app.get("/jogo/:id", jogoController.findByID)
 app.get("/review", reviewController.listar)
 
-/* ROTAS COM TOKEN */
-app.use(middleware.middleware)
+app.get('/', (req,res)=>{
+    res.status(200).json({message:'esta rodando'})
+})
 
-app.post('/review', reviewController.cadastrar)
-app.post('/compra', compraController.cadastrar)
-app.post('/compra/carrinho', compraController.cadastrarCarrinho)
-app.get('/compra', compraController.listar)
+app.post('/review', middleware.middleware, reviewController.cadastrar)
+app.post('/compra', middleware.middleware,compraController.cadastrar)
+app.post('/compra/carrinho', middleware.middleware,compraController.cadastrarCarrinho)
+app.get('/compra', middleware.middleware,compraController.listar)
+app.post('/genero', middleware.middleware,middleware.ranking, generoController.cadastrar)
+app.get('/genero', middleware.middleware,middleware.ranking, generoController.listar)
 
-/* ROTAS APENAS PARA DEV */
-app.use(middleware.ranking)
-app.post("/jogo", jogoController.cadastrar)
 
 /* START SERVER */
 async function startServer() {

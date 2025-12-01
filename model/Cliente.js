@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize')
 const db = require('../db/conn')
-const { ranking } = require('../middleware/auth.middleware')
 
 
 const Cliente = db.define('clientes',{
@@ -15,7 +14,7 @@ const Cliente = db.define('clientes',{
     },
     DataNascimento:{
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     },
     telefone:{
         type: DataTypes.STRING(63),

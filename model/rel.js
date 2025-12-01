@@ -1,36 +1,32 @@
 const Cliente = require('./Cliente')
 const Compra = require('./Compra')
-const Cupom = require('./Cupom')
-const Desenvolvedor = require('./Desenvolvedor')
 const Genero = require('./Genero')
 const Jogo = require('./Jogo')
-const Plataforma = require('./Plataforma')
 const Review = require('./Review')
+const CompraItem = require('./CompraItens')
 
-//// Cliente x Compra ///////
+
+//////////
 Cliente.hasMany(Compra, {
-    foreignKey: 'idCliente',
-    onDelete: 'CASCADE'
-})
-
+    foreignKey: 'idCliente'
+});
 Compra.belongsTo(Cliente, {
-    foreignKey: 'idCliente',
-    onUpdate: 'CASCADE'
-})
-////////////////////////////
-
-/////////Jogo x Compra/////////
-Jogo.hasMany(Compra, {
-    foreignKey: 'idJogo',
-    onDelete: 'CASCADE'
-})
-
-Compra.belongsTo(Jogo, {
-    foreignKey: 'idJogo',
-    onUpdate: 'CASCADE'
-})
-////////////////////////////
-
+    foreignKey: 'idCliente'
+});
+//////////
+Compra.hasMany(CompraItem, {
+    foreignKey: 'codCompra'
+});
+CompraItem.belongsTo(Compra, {
+    foreignKey: 'codCompra'
+});
+/////////
+Jogo.hasMany(CompraItem, {
+    foreignKey: 'idJogo'
+});
+CompraItem.belongsTo(Jogo, {
+    foreignKey: 'idJogo'
+});
 /////////Jogo x Genero/////////
 Genero.hasMany(Jogo, {
     foreignKey: 'idGenero',
@@ -39,33 +35,6 @@ Genero.hasMany(Jogo, {
 
 Jogo.belongsTo(Genero, {
     foreignKey: 'idGenero',
-    onUpdate: 'CASCADE'
-})
-////////////////////////////
-
-/////////Jogo x Desenvolvedor/////////
-Desenvolvedor.hasMany(Jogo, {
-    foreignKey: 'idDesenvolvedor',
-    onDelete: 'CASCADE'
-})
-
-Jogo.belongsTo(Desenvolvedor, {
-    foreignKey: 'idDesenvolvedor',
-    onUpdate: 'CASCADE'
-})
-////////////////////////////
-
-/////////Jogo x Plataforma/////////
-Plataforma.hasMany(Jogo, {
-    foreignKey: 'idPlataforma',
-    onDelete: 'CASCADE'
-})
-
-Jogo.belongsTo(Plataforma, {
-    foreignKey: {
-        name: 'idPlataforma',
-        allowNull: true
-    },
     onUpdate: 'CASCADE'
 })
 ////////////////////////////
@@ -85,27 +54,16 @@ Review.belongsTo(Jogo, {
 /////////Cliente x Reviews/////////
 Cliente.hasMany(Review, {
     foreignKey: 'idCliente',
-    as: 'reviews', // Mudar para nome consistente
+    as: 'reviews', 
     onDelete: 'CASCADE'
 })
 
 Review.belongsTo(Cliente, {
     foreignKey: 'idCliente',
-    as: 'cliente', // Mudar para nome consistente
+    as: 'cliente',
     onUpdate: 'CASCADE'
 })
 ////////////////////////////
 
-/////////Compras x Cupons/////////
-Compra.hasMany(Cupom, {
-    foreignKey: 'idCompra',
-    onDelete: 'CASCADE'
-})
 
-Cupom.belongsTo(Compra, {
-    foreignKey: 'idCompra',
-    onUpdate: 'CASCADE'
-})
-
-// Exportar todos os modelos
-module.exports = {Cliente,Compra,Cupom,Desenvolvedor,Genero,Jogo,Plataforma,Review}
+module.exports = {Cliente,Compra,Genero,Jogo,Review, CompraItem}

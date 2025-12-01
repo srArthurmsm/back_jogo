@@ -1,11 +1,11 @@
-const Cliente = require('../model/Cliente')
-const bcrypt = require('../service/bcrypt.service')
+const Cliente = require('../../backEnd/model/Cliente')
+const bcrypt = require('../../backEnd/service/bcrypt.service')
 
 
 const cadastrar = async (req,res)=>{
     const valores = req.body
     try{
-        hashSenha = await bcrypt.criarSenha(valores.senha)
+        const hashSenha = await bcrypt.criarSenha(valores.senha)
         console.log(hashSenha)
 
         if (req.file) {
@@ -13,7 +13,7 @@ const cadastrar = async (req,res)=>{
             valores.imagem = "/" + filePath;
         }
 
-        const dados = Cliente.create({
+        const dados = await Cliente.create({
             nome: valores.nome,
             DataNascimento: valores.DataNascimento,
             telefone: valores.telefone,
@@ -25,6 +25,7 @@ const cadastrar = async (req,res)=>{
         res.status(200).json({message:`O Cliente ${valores.nome} Foi cadastrado`})
     }
     catch(err){
+        console.error("Erro no cadastro:", err);
         res.status(500).json({message:"O Cliente não Foi cadastrado"})
     }
 }
