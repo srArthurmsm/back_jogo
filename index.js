@@ -7,6 +7,8 @@ const fs = require('fs')
 const conn = require('./db/conn')
 require('./model/rel')
 
+const upload = require('./config/uploadConfig')
+
 const PORT = process.env.PORT || 3000
 const isProduction = process.env.NODE_ENV === 'production'
 
