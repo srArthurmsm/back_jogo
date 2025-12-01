@@ -1,4 +1,4 @@
-const Compra = require('../../backEnd/model/Compra');
+const Compra = require('../model/Compra');
 const CompraItem = require('../model/CompraItens');
 const Jogo = require('../model/Jogo');
 

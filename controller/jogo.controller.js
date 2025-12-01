@@ -1,4 +1,4 @@
-const Jogo = require('../../backEnd/model/Jogo')
+const Jogo = require('../model/Jogo')
 
 const cadastrar = async (req,res)=>{
     const valores = req.body

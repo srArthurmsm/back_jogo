@@ -1,6 +1,6 @@
-const Cliente = require('../../backEnd/model/Cliente')
-const jwt = require('../../backEnd/service/jwt.service')
-const bcrypt = require('../../backEnd/service/bcrypt.service')
+const Cliente = require('../model/Cliente')
+const jwt = require('../service/jwt.service')
+const bcrypt = require('../service/bcrypt.service')
 
 
 const Login = async (req,res)=>{

@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000
 const isProduction = process.env.NODE_ENV === 'production'
 
 const clienteController = require('./controller/cliente.controller')
+const generoController = require('./controller/genero.controller')
 const jogoController = require('./controller/jogo.controller')
 const compraController = require('./controller/compra.controller')
 const reviewController = require('./controller/review.controller')

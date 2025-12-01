@@ -1,5 +1,5 @@
-const Cliente = require('../../backEnd/model/Cliente')
-const bcrypt = require('../../backEnd/service/bcrypt.service')
+const Cliente = require('../model/Cliente')
+const bcrypt = require('../service/bcrypt.service')
 
 
 const cadastrar = async (req,res)=>{
