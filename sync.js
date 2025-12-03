@@ -1,15 +1,18 @@
 const conn = require('./db/conn')
+require('./model/rel') // importa TODAS as relações antes do sync
 
-async function SyncDataBase() {
+async function resetDatabase() {
     try {
-        await conn.query('SET FOREIGN_KEY_CHECKS = 0');
-        await conn.sync({ force: true });
-        await conn.query('SET FOREIGN_KEY_CHECKS = 1');
+        await conn.query("SET FOREIGN_KEY_CHECKS = 0")
+        await conn.drop()
+        await conn.sync({ force: true }) 
+        await conn.query("SET FOREIGN_KEY_CHECKS = 1")
     } catch (err) {
-        console.error("Erro:", err);
+        console.error("ERRO:", err)
     } finally {
-        await conn.close();
+        await conn.close()
+
     }
 }
 
-SyncDataBase();
+resetDatabase()
