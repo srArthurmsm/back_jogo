@@ -19,12 +19,12 @@ if (!fs.existsSync('uploads')) fs.mkdirSync('uploads')
 app.use('/uploads', express.static('uploads'))
 
 /* ===== ROTAS ORGANIZADAS ===== */
-app.use('/cliente', require('./routes/cliente.routes'))
-app.use('/jogo', require('./routes/jogo.routes'))
-app.use('/genero', require('./routes/genero.routes'))
-app.use('/compra', require('./routes/compra.routes'))
-app.use('/review', require('./routes/review.routes'))
-app.use('/auth', require('./routes/auth.routes'))
+app.use('/cliente', require('./router/cliente.routes'))
+app.use('/jogo', require('./router/jogo.routes'))
+app.use('/genero', require('./router/genero.routes'))
+app.use('/compra', require('./router/compra.routes'))
+app.use('/review', require('./router/review.routes'))
+app.use('/auth', require('./router/auth.routes'))
 
 /* ROTA PRINCIPAL */
 app.get('/', (req, res) => {
