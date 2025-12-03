@@ -7,11 +7,12 @@ async function resetDatabase() {
         await conn.drop()
         await conn.sync({ force: true }) 
         await conn.query("SET FOREIGN_KEY_CHECKS = 1")
+
     } catch (err) {
         console.error("ERRO:", err)
     } finally {
         await conn.close()
-
+        console.log("Conexão fechada.")
     }
 }
 

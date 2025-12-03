@@ -4,41 +4,78 @@ const Jogo = require('../model/Jogo');
 
 const cadastrar = async (req, res) => {
     try {
-        await Compra.create(req.body)
-        return res.status(200).json({ message: "Compra cadastrada" })
-    } catch (err) {
-        return res.status(500).json({ erro: err.message })
-    }
-}
+        const { idCliente, idJogo, preco } = req.body;
 
-const cadastrarCarrinho = async (req, res) => {
-    try {
-        const { idCliente, compras } = req.body
-
-        if (!idCliente || !Array.isArray(compras) || compras.length === 0) {
-            return res.status(400).json({ erro: "Dados inválidos." })
+        if (!idCliente || !idJogo || !preco) {
+            return res.status(400).json({ erro: "Dados inválidos." });
         }
         const compra = await Compra.create({
             idCliente,
+            valorTotal: preco
+        });
+        await CompraItem.create({
+            codCompra: compra.codCompra,
+            idJogo,
+            precoItem: preco
+        });
+
+        const compraCompleta = await Compra.findOne({
+            where: { codCompra: compra.codCompra },
+            include: [
+                {
+                    model: CompraItem,
+                    include: [Jogo]
+                }
+            ]
+        });
+
+        return res.status(201).json({
+            message: "Item comprado com sucesso!",
+            compra: compraCompleta
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ erro: err.message });
+    }
+};
+
+const cadastrarCarrinho = async (req, res) => {
+    try {
+        const { idCliente, compras } = req.body;
+
+        if (!idCliente || !Array.isArray(compras) || compras.length === 0) {
+            return res.status(400).json({ erro: "Dados inválidos." });
+        }
+
+        for (const item of compras) {
+            if (!item.idJogo || !item.preco) {
+                return res.status(400).json({
+                    erro: "Todos os itens precisam ter idJogo e preco."
+                });
+            }
+        }
+
+        const compra = await Compra.create({
+            idCliente,
             valorTotal: 0
-        })
+        });
 
-        const codCompra = compra.codCompra
+        const codCompra = compra.codCompra;
 
-        const itensParaCriar = compras.map(item => ({
-            codCompra: codCompra,
+        // cria itens
+        const itens = compras.map(item => ({
+            codCompra,
             idJogo: item.idJogo,
             precoItem: item.preco
-        }))
+        }));
 
-        await CompraItem.bulkCreate(itensParaCriar);
+        await CompraItem.bulkCreate(itens);
 
-        const valorTotal = itensParaCriar.reduce((s, i) => s + i.precoItem, 0)
+        const valorTotal = itens.reduce((s, i) => s + i.precoItem, 0);
 
-        await Compra.update(
-            { valorTotal },
-            { where: { codCompra } }
-        )
+        await compra.update({ valorTotal });
+
         const compraCompleta = await Compra.findOne({
             where: { codCompra },
             include: [
@@ -47,35 +84,32 @@ const cadastrarCarrinho = async (req, res) => {
                     include: [Jogo]
                 }
             ]
-        })
+        });
+
         return res.status(201).json({
             message: "Compra finalizada!",
             compra: compraCompleta
-        })
+        });
 
     } catch (err) {
-        console.error(err)
-        return res.status(500).json({ erro: err.message })
+        console.error(err);
+        return res.status(500).json({ erro: err.message });
     }
-}
+};
 
 const listar = async (req, res) => {
     try {
         const dados = await CompraItem.findAll({
             include: [
-                {
-                    model: Jogo,
-                },
-                {
-                    model: Compra,
-                }
+                Jogo,
+                Compra
             ]
-        })
+        });
 
-        return res.status(200).json(dados)
+        return res.status(200).json(dados);
     } catch (err) {
-        return res.status(500).json({ erro: err.message })
+        return res.status(500).json({ erro: err.message });
     }
 };
 
-module.exports = {cadastrar,cadastrarCarrinho,listar}
+module.exports = { cadastrar, cadastrarCarrinho, listar };
