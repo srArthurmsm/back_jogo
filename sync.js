@@ -3,7 +3,7 @@ const conn = require('./db/conn')
 
 async function SyncDataBase(){
     try{
-        await conn.sync({alter:true})
+        await conn.sync({force:true})
     }
     catch(err){
         console.error('erro', err)
